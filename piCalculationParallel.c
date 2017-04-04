@@ -14,16 +14,16 @@ double fRand(double, double);
 void main()
 {
 	srand(time(NULL));
-	double avePI = 0;
+	double avePI = 0, sum = 0;
 	
 	for (int i = 1; i <= MAXPLAYER; i++)
 	{
 		printf("\nPlayer #%i starts throwing darts in 3 seconds ...", i);
 		//_sleep(3000);
 
-		avePI += player();
+		sum += player();
 	}
-	avePI /= MAXPLAYER;
+	avePI = sum / MAXPLAYER;
 
 	printf("\n\n\tThe Average calculated PI is : %f\n", avePI);
 }
@@ -39,7 +39,7 @@ float player()
 		y = fRand(-1.0, 1.0);
 		//printf("\n\t%2i. X: %f ,\t Y: %f", i, x, y);
 
-		if (((x*x) + (y*y)) <= 1.0)
+		if (x*x + y*y < 1.0)
 			score++;
 	}
 
