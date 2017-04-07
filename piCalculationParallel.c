@@ -1,57 +1,60 @@
-//#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-//using namespace std;
+#define DART 1000000000
+#define MAXPLAYER 8
 
-#define DART 10000
-#define MAXPLAYER 1000
-
-float player();
-double fRand(double, double);
-
+int player(int);
+long double fRand(long double, long double);
 void main()
 {
-	srand(time(NULL));
-	double avePI = 0, sum = 0;
-	
-	for (int i = 1; i <= MAXPLAYER; i++)
-	{
-		printf("\nPlayer #%i starts throwing darts in 3 seconds ...", i);
-		//_sleep(3000);
+	long double pi;
+	long const double realPi = 3.141592653589;
+	int score = 0, playersNum = MAXPLAYER, playersDarts;
 
-		sum += player();
-	}
-	avePI = sum / MAXPLAYER;
+	playersDarts = DART / playersNum;
 
-	printf("\n\n\tThe Average calculated PI is : %f\n", avePI);
+	clock_t beginParallel = clock();
+#pragma omp parallel for
+	for (int i = 1; i <= playersNum; i++)
+		score += player(playersDarts);
+	clock_t endParallel = clock();
+	pi = 4.0 * ((long double)score / (long double)DART);
+	double time_spent_parallel = (double)(endParallel - beginParallel) / CLOCKS_PER_SEC;
+	printf("%i\n%i", score, DART);
+	printf("\n\t Calculated pi : %.12Lf\n", pi);
+	printf(	 "\t       Real pi : %.12Lf\n", realPi);
+	printf("\n\t Parallel Execution Time: %f\n", time_spent_parallel);
+
+	clock_t beginSerial = clock();
+	pi = 4.0 * ((long double) player(DART) / (long double)DART);
+	clock_t endSerial = clock();
+	double time_spent_serial = (double)(endSerial - beginSerial) / CLOCKS_PER_SEC;
+	printf("\n\t Calculated pi : %.12Lf\n", pi);
+	printf(	 "\t       Real pi : %.12Lf\n", realPi);
+	printf("\n\t Serial Execution Time: %f\n", time_spent_serial);
 }
 
-float player()
+int player(int playersDarts)
 {
-	double pi, x, y, dart = DART, score = 0;
-	//int dart = DART, score = 0;
+	srand(time(NULL));
+	long double pi, x, y;
+	int score = 0;
 
-	for (int i = 0; i < dart; i++)
+	for (int i = 0; i < playersDarts; i++)
 	{
 		x = fRand(-1.0, 1.0);
 		y = fRand(-1.0, 1.0);
-		//printf("\n\t%2i. X: %f ,\t Y: %f", i, x, y);
 
 		if (x*x + y*y < 1.0)
 			score++;
 	}
-
-	pi = 4.0 * (score / dart);
-
-	printf("\n\n\t#### Pi Number for this player is: %f\n", pi);
-	printf("*******************************************************************\n");
-	return pi;
+	return score;
 }
 
-double fRand(double fMin, double fMax)
+long double fRand(long double fMin, long double fMax)
 {
-	double f = (double)rand() / RAND_MAX;
+	long double f = (double)rand() / RAND_MAX;
 	return fMin + f * (fMax - fMin);
 }
