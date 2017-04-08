@@ -10,6 +10,18 @@
 						// Number of threads
 
 /**
+	Generates a random number between two params given
+
+	@param: random number scope
+	@return: desired random number
+*/
+long double fRand(long double fMin, long double fMax)
+{
+	long double f = (double)rand() / RAND_MAX;
+	return fMin + f * (fMax - fMin);
+}
+
+/**
 	Generates random dots on the board
 
 	@param: playerDarts, total number of darts to throw
@@ -32,20 +44,6 @@ int player(int playersDarts)
 	return score;
 }
 
-
-/**
-	Generates a random number between two params given
-
-	@param: random number scope
-	@return: desired random number
-*/
-long double fRand(long double fMin, long double fMax)
-{
-	long double f = (double)rand() / RAND_MAX;
-	return fMin + f * (fMax - fMin);
-}
-
-
 void main()
 {
 	long double pi;
@@ -66,14 +64,11 @@ void main()
 	pi = 4.0 * ((long double)score / (long double)DART);
 
 	double time_spent_parallel = endParallel - beginParallel;
-
-	printf("%i\n%i", score, DART);
+printf("\nrandom by rand_r()=(%i)\n", rand_r(NULL));
 	printf("\n\t Calculated pi : %.12Lf\n", pi);
 	printf(	 "\t       Real pi : %.12Lf\n", REAL_PI);
 	printf("\n\t Parallel Execution Time: %f\n", time_spent_parallel);
 
-
-	
 ////////////////////////////////////////////////////
 //	Serial										  //
 ////////////////////////////////////////////////////
@@ -81,10 +76,10 @@ void main()
 	double beginSerial = omp_get_wtime();
 	pi = 4.0 * ((long double) player(DART) / (long double)DART);
 	double endSerial = omp_get_wtime();
+
 	double time_spent_serial = endSerial - beginSerial;
+	
 	printf("\n\t Calculated pi : %.12Lf\n", pi);
 	printf(	 "\t       Real pi : %.12Lf\n", REAL_PI);
 	printf("\n\t Serial Execution Time: %f\n", time_spent_serial);
 }
-
-
