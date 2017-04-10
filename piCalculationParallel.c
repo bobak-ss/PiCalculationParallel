@@ -48,23 +48,24 @@ void main()
 {
 	long double pi;
 	long const double REAL_PI = 3.141592653589;
-	int score = 0, playersNum = MAXPLAYER, playersDarts;
+	int score = 0, playersDarts;
 
 ////////////////////////////////////////////////////
 //	Parallel									  //
 ////////////////////////////////////////////////////
 
 	// devide the total number of DARTS between players
-	playersDarts = DART / playersNum;
+	playersDarts = DART / MAXPLAYER;
 	double beginParallel = omp_get_wtime();
+
 #pragma omp parallel for
-	for (int i = 1; i <= playersNum; i++)
+	for (int i = 1; i <= MAXPLAYER; i++)
 		score += player(playersDarts);
+
 	double endParallel = omp_get_wtime();
 	pi = 4.0 * ((long double)score / (long double)DART);
 
 	double time_spent_parallel = endParallel - beginParallel;
-printf("\nrandom by rand_r()=(%i)\n", rand_r(NULL));
 	printf("\n\t Calculated pi : %.12Lf\n", pi);
 	printf(	 "\t       Real pi : %.12Lf\n", REAL_PI);
 	printf("\n\t Parallel Execution Time: %f\n", time_spent_parallel);
